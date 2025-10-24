@@ -1,0 +1,7 @@
+<configuration>
+    <input>
+        <net-file value="mountain.net.xml"/>
+        <route-files value="routes.rou.xml"/>
+        <additional-files value="additional.xml"/>
+    </input>
+</configuration>
