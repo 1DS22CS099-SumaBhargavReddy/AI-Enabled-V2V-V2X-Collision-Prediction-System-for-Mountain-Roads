@@ -1,0 +1,104 @@
+================================================================================
+                     CurveSafe-V2X: IMPLEMENTATION PAPER
+================================================================================
+
+1. PROJECT OVERVIEW
+-------------------
+CurveSafe-V2X is a V2V collision avoidance framework combining SUMO (Micro-Traffic), 
+ns-3 (Networking), and LSTM (Deep Learning). It utilizes time-series vehicle 
+telemetry to predict and prevent accidents on complex road geometries.
+
+2. MACHINE LEARNING (ML) MATHEMATICAL MODEL
+-------------------------------------------
+
+A. DATA PREPROCESSING (Z-SCORE NORMALIZATION)
+    z = (x - μ) / σ
+
+B. FEATURE EXTRACTION (HEADING & CURVATURE)
+    θ = (arctan2(Δy, Δx) * 180/π + 360) mod 360
+
+C. LSTM ARCHITECTURE (TEMPORAL FEATURING)
+    1. Forget Gate (f_t): f_t = σ(W_f · [h_{t-1}, x_t] + b_f)
+    2. Input Gate (i_t):  i_t = σ(W_i · [h_{t-1}, x_t] + b_i)
+    3. Cell State (C_t):  C_t = f_t * C_{t-1} + i_t * tanh(W_c · [h_{t-1}, x_t] + b_c)
+    4. Output Gate (o_t): o_t = σ(W_o · [h_{t-1}, x_t] + b_o)
+    5. Hidden State (h_t): h_t = o_t * tanh(C_t)
+
+D. PREDICTION & CLASSIFICATION (SIGMOID)
+    P(Risk) = 1 / (1 + e^-z)
+
+E. TRAINING LOSS (FOCAL LOSS)
+    FL(p_t) = -α_t(1 - p_t)^γ * log(p_t)
+
+3. SUMO SIMULATION ALGORITHMS
+-----------------------------
+
+A. CAR-FOLLOWING MODEL (KRAUSS)
+    v_safe = v_l + (g - v_lτ) / ( (v_l+v_e)/2b + τ )
+
+B. NEAREST NEIGHBOR SEARCH
+    d = √[(x_i - x_j)² + (y_i - y_j)²]
+
+C. SLIDING WINDOW MECHANISM
+    Sequence(V_i) = [F_{t-9}, F_{t-8}, ..., F_t] 
+
+4. ns-3 (V2V COMMUNICATION) ALGORITHMS
+--------------------------------------
+
+A. WAVE (IEEE 802.11p) COMMUNICATION
+    Standard for 5.9GHz V2X Networking.
+
+B. TIME-TO-COLLISION (TTC) CALCULATION
+    TTC = d / |v_ego - v_target|
+
+C. RADIO PROPAGATION (FREE SPACE PATH LOSS)
+    L_dB = 20 log10(d) + 20 log10(f) - 147.55
+
+5. EXECUTION WORKFLOW (COMMANDS & USAGE)
+-----------------------------------------
+
+STEP 1: Generate Traffic Routes
+    Command: python simulation/scripts/generate_trips.py
+    Usage:   Creates randomized vehicle trips within the map (mountain.net.xml).
+
+STEP 2: Data Collection (Raw Telemetry)
+    Command: python simulation/scripts/log_vehicle_data.py
+    Usage:   Runs SUMO and saves vehicle traces to 'output/vehicle_data.csv'.
+
+STEP 3: ML Sequence Preparation
+    Command: python ml_model/analyze_and_prepare_sequences.py
+    Usage:   Processes raw CSV data into scaled 10-step sequences (X.npy, y.npy).
+             Also generates the 'scaler.pkl' for real-time normalization.
+
+STEP 4: Train LSTM Model
+    Command: python ml_model/train_lstm_model.py
+    Usage:   Trains the Deep Learning model. Saves 'final_model.h5' and displays 
+             accuracy/loss curves in 'ml_model/trained_model/plots/'.
+
+STEP 5: Model Export (Optional/TFLite)
+    Command: python ml_model/export_model.py
+    Usage:   Converts the Keras model to a lightweight TFLite format for 
+             low-latency simulation runs.
+
+STEP 6: Run Full Integrated Simulation (The "Main" Run)
+    Command: python ns-3/ns3_interface.py
+    Usage:   - Launches SUMO-GUI.
+             - Loads the ML model and Scaler.
+             - Performs real-time risk inference per vehicle.
+             - Simulates ns-3 V2V broadcasting.
+             - Displays "🚨 COLLISION WARNING" in the terminal.
+
+6. RESULTS & OUTPUTS
+--------------------
+- Visual:   SUMO GUI displays vehicles turning RED when risk probability P > 0.5.
+- Network:  Terminal logs V2V alerts including Sender ID, Receiver ID, and Prob.
+- Logs:     Comprehensive records are stored in 'output/alerts.csv' for later analysis.
+- Metrics:  Model precision, recall, and F1-score are printed during Step 4.
+
+================================================================================
+
+# 1. Set the path again just in case
+$env:SUMO_HOME="C:\Program Files (x86)\Eclipse\Sumo"
+
+# 2. Run using absolute paths so it works from your current folder
+& "d:\Project\Downloads C Drive\V2V\V2V\.venv\Scripts\python.exe" "d:\Project\Downloads C Drive\V2V\V2V\Mountain_v2v_project\ns-3\ns3_interface.py"

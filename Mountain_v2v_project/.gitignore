@@ -1,0 +1,57 @@
+# Python virtual environments
+venv/
+.venv/
+
+# Node modules
+node_modules/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# OS / IDE
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/
+
+# Model and large files
+trained_model/
+*.tflite
+*.h5
+*.pt
+*.onnx
+*.pb
+*.pkl
+*.joblib
+
+# Dataset / Simulation large outputs
+simulation/map/
+simulation/output/
+*.csv
+*.npz
+*.npy
+*.bin
+*.jsonl
+
+# Logs
+*.log
+
+# Cache
+*.cache/
+.cache/
+__cache__/
+
+# Build / artifacts
+dist/
+build/
+*.egg-info/
+
+# Temporary files
+*.tmp
+*.bak
+
+ml_model/sequences/
+ml_model/dataset/
+simulation/output/
+docs/*.pptx
