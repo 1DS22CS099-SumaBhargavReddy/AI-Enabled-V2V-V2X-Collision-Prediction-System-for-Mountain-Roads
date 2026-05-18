@@ -18,6 +18,73 @@ The system predicts potential collisions using a hybrid approach combining physi
 - **Multi-Model Support**: Supports multiple collision prediction models including LSTM, GRU, and Transformer architectures.
 - **Performance Monitoring**: Tracks key metrics such as collision rate, prediction accuracy, and communication latency.
 
+## ARCHITECTURE
+
++-------------------+
+|   SUMO Simulator  |
++-------------------+
+| Vehicle Movement  |
+| Mountain Roads    |
++---------+---------+
+          |
+          | Vehicle Data
+          v
++-------------------+
+|     TraCI API     |
++-------------------+
+| Real-Time Data    |
+| Collection        |
++---------+---------+
+          |
+          | Extracted Features
+          v
++-----------------------------+
+|  Feature Extraction Layer   |
++-----------------------------+
+| Speed                       |
+| Distance                    |
+| Direction                   |
+| TTC Calculation             |
++-------------+---------------+
+              |
+              | Processed Data
+              v
++-----------------------------+
+| AI Collision Prediction     |
++-----------------------------+
+| LSTM / GRU / Transformer    |
+| TensorFlow Lite             |
++-------------+---------------+
+              |
+              | Risk Prediction
+              v
++-----------------------------+
+| NS-3 V2V/V2X Communication  |
++-----------------------------+
+| LTE / 5G Network            |
+| Vehicle Message Exchange    |
++-------------+---------------+
+              |
+              | Warning Signals
+              v
++-----------------------------+
+| Alert & Decision System     |
++-----------------------------+
+| Collision Warning           |
+| Safe Speed Recommendation   |
+| Emergency Alert             |
++-------------+---------------+
+              |
+              | System Logs
+              v
++-----------------------------+
+| Monitoring & Logging        |
++-----------------------------+
+| Accuracy                    |
+| Latency                     |
+| Collision Statistics        |
++-----------------------------+
+
 ## Prerequisites
 
 Before running the project, ensure you have the following installed:
