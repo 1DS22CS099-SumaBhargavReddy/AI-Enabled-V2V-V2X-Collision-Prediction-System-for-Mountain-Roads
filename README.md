@@ -51,8 +51,7 @@ The system predicts potential collisions using a hybrid approach combining physi
 | AI Collision         |
 | Prediction           |
 +----------------------+
-| LSTM / GRU /         |
-| Transformer          |
+| LSTM / GRU           |
 | TensorFlow Lite      |
 +----------+-----------+
            |
@@ -61,7 +60,7 @@ The system predicts potential collisions using a hybrid approach combining physi
 | NS-3 V2V/V2X         |
 | Communication        |
 +----------------------+
-| LTE / 5G Network     |
+| 802.11p Network     |
 | Vehicle Messaging    |
 +----------+-----------+
            |
